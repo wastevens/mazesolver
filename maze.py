@@ -23,7 +23,7 @@ class Maze():
         self.cell_size_y = cell_size_y
         self.win = win
         self.cells = []
-        self.seed = (0 if seed == None else seed)
+        self.seed = (seed if seed != None else None)
         random.seed(self.seed)
 
     def create(self):
@@ -44,11 +44,13 @@ class Maze():
         self.draw_cell(self.num_cols-1, self.num_rows-1)
 
     def break_walls(self):
-        pass
+        self.break_walls_r(0,0)
+        for row in self.cells:
+            for c in row:
+                c.visited = False
 
     def break_walls_r(self, i, j):
         pos = (i, j)
-        print(f"pos: {pos}")
         self.cells[i][j].visited = True
         while True:
             to_visit = []
@@ -67,22 +69,21 @@ class Maze():
             
             if(len(to_visit) == 0):
                 return
-            print(f"to_visit: {to_visit}")
+            #print(f"to_visit: {to_visit}")
             target = random.choice(to_visit)
-            print(f"target: {target}")
+            #print(f"target: {target}")
             self.break_wall(pos, target)
             self.break_walls_r(target[0], target[1])
 
     def break_wall(self, pos, target):
-        print(f"break wall between {pos} and {target}")
+        #print(f"break wall between {pos} and {target}")
         if(pos[0] - target[0] == 0):
-            #same col
             if(pos[1] - target[1] > 0):
-                print(f"target up")
+                #print(f"target up")
                 self.cells[pos[0]][pos[1]].top_wall = False
                 self.cells[target[0]][target[1]].bottom_wall = False
             elif(pos[1] - target[1] < 0):
-                print(f"target down")
+                #print(f"target down")
                 self.cells[pos[0]][pos[1]].bottom_wall = False
                 self.cells[target[0]][target[1]].top_wall = False
             else:
@@ -92,26 +93,53 @@ class Maze():
             return
         
         if(pos[0] - target[0] > 0):
-            print(f"target left")
+            #print(f"target left")
             self.cells[pos[0]][pos[1]].left_wall = False
             self.cells[target[0]][target[1]].right_wall = False
         elif(pos[0] - target[0] < 0):
-            print(f"target right")
+            #print(f"target right")
             self.cells[pos[0]][pos[1]].right_wall = False
             self.cells[target[0]][target[1]].left_wall = False
         else:
             raise Exception(f"position {pos} and target {target} cannot be equal")
         self.draw_cell(pos[0], pos[1])
         self.draw_cell(target[0], target[1])
-            
-            
 
-            
+    def solve(self):
+        self.solve_r((0,0), (self.num_cols-1, self.num_rows-1))
 
+    def solve_r(self, current, target):
+        cell = self.cells[current[0]][current[1]]
+        if cell.visited:
+            return False
+        cell.visited = True
+        if current == target:
+            return True
         
+        neighbors = []
+        if current != (0,0) and not cell.left_wall:
+            neighbors.append((current[0]-1,current[1]))
+        if not cell.right_wall:
+            neighbors.append((current[0]+1,current[1]))
+        if not cell.top_wall:
+            neighbors.append((current[0],current[1]-1))
+        if not cell.bottom_wall:
+            neighbors.append((current[0],current[1]+1))
 
+        for n in neighbors:
+            neighbor_cell = self.cells[n[0]][n[1]]
+            if not neighbor_cell.visited:
+                cell.draw_move(neighbor_cell, undo=False)
+                self.animate()
+                s = self.solve_r(n, target)
+                if s:
+                    return True
+                else:
+                    cell.draw_move(neighbor_cell, undo=True)
+                    self.animate()
+        return False
+        
     def draw_cell(self, i, j):
-        print(f"draw cell[{i}][{j}] {self.cells[i][j]}")
         self.cells[i][j].draw()
         self.animate()
 
