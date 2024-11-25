@@ -21,3 +21,11 @@ class Cell():
             self.window.draw_line(Line(self.top_left, Point(self.bottom_right.x, self.top_left.y)), "black")
         if(self.bottom_wall):
             self.window.draw_line(Line(self.bottom_right, Point(self.top_left.x, self.bottom_right.y)), "black")
+
+    def center(self):
+        return Point((self.top_left.x + self.bottom_right.x) / 2, (self.top_left.y + self.bottom_right.y) /2)
+
+    def draw_move(self, to_cell, undo=False):
+        l = Line(self.center(), to_cell.center())
+        color = "grey" if undo else "red"
+        self.window.draw_line(l, color)
