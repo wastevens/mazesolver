@@ -7,7 +7,7 @@ from maze import Maze
 def main():
     win = Window(800, 600)
 
-    maze = Maze(20,20,10,10,30,30,win)
+    maze = Maze(20,20,10,15,30,30,win)
 
     maze.create()
     maze.animate()
@@ -15,6 +15,8 @@ def main():
     maze.open_enterance()
     maze.open_exit()
     
+    maze.break_walls_r(0, 0)
+
     win.wait_for_close()
 
     

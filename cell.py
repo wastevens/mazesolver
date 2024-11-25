@@ -11,6 +11,7 @@ class Cell():
         self.top_left = top_left
         self.bottom_right = bottom_right
         self.window = window
+        self.visited = False
 
     def draw(self):
         self.window.draw_line(Line(self.top_left, Point(self.top_left.x, self.bottom_right.y)), "black" if self.left_wall else "#d9d9d9")
