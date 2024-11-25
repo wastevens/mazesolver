@@ -12,6 +12,8 @@ def main():
     maze.create()
     maze.animate()
     
+    maze.open_enterance()
+    maze.open_exit()
     
     win.wait_for_close()
 

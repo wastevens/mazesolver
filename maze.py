@@ -29,14 +29,22 @@ class Maze():
                 top_left = Point((x * self.cell_size_x) + self.x1, (y * self.cell_size_y) + self.y1)
                 bottom_right = Point(((x+1) * self.cell_size_x) + self.x1, ((y+1) * self.cell_size_y) + self.y1)
                 self.cells[x][y] = Cell(True, True, True, True, top_left, bottom_right, self.win)
-    
+                self.draw_cell(x, y)
+
+    def open_enterance(self):
+        self.cells[0][0].left_wall = False
+        self.draw_cell(0, 0)
+
+    def open_exit(self):
+        self.cells[self.num_rows-1][self.num_cols-1].right_wall = False
+        self.draw_cell(self.num_rows-1, self.num_cols-1)
+
     def draw_cell(self, i, j):
         self.cells[i][j].draw()
+        self.animate()
 
     def animate(self):
-        for i in range(len(self.cells)):
-            for j in range(len(self.cells[i])):
-                self.draw_cell(i, j)
+        self.win.redraw()
         time.sleep(0.05)
 
 

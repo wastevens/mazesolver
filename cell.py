@@ -13,14 +13,10 @@ class Cell():
         self.window = window
 
     def draw(self):
-        if(self.left_wall):
-            self.window.draw_line(Line(self.top_left, Point(self.top_left.x, self.bottom_right.y)), "black")
-        if(self.right_wall):
-            self.window.draw_line(Line(self.bottom_right, Point(self.bottom_right.x, self.top_left.y)), "black")
-        if(self.top_wall):
-            self.window.draw_line(Line(self.top_left, Point(self.bottom_right.x, self.top_left.y)), "black")
-        if(self.bottom_wall):
-            self.window.draw_line(Line(self.bottom_right, Point(self.top_left.x, self.bottom_right.y)), "black")
+        self.window.draw_line(Line(self.top_left, Point(self.top_left.x, self.bottom_right.y)), "black" if self.left_wall else "#d9d9d9")
+        self.window.draw_line(Line(self.bottom_right, Point(self.bottom_right.x, self.top_left.y)), "black" if self.right_wall else "#d9d9d9")
+        self.window.draw_line(Line(self.top_left, Point(self.bottom_right.x, self.top_left.y)), "black" if self.top_wall else "#d9d9d9")
+        self.window.draw_line(Line(self.bottom_right, Point(self.top_left.x, self.bottom_right.y)), "black" if self.bottom_wall else "#d9d9d9")
 
     def center(self):
         return Point((self.top_left.x + self.bottom_right.x) / 2, (self.top_left.y + self.bottom_right.y) /2)
@@ -29,3 +25,6 @@ class Cell():
         l = Line(self.center(), to_cell.center())
         color = "grey" if undo else "red"
         self.window.draw_line(l, color)
+
+    def __repr__(self):
+        return f"Cell[top_left: {self.top_left}, bottom_right: {self.bottom_right}, left_wall: {self.left_wall}, top_wall: {self.top_wall}, right_wall: {self.right_wall}, bottom_wall: {self.bottom_wall}"         
